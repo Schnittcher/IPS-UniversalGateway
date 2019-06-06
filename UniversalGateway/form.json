@@ -1,0 +1,43 @@
+{
+  "elements":
+  [
+    {
+      "type": "List",
+      "name": "Variables",
+      "caption": "Variablen",
+      "rowCount": 0,
+      "add": true,
+      "delete": true,
+      "sort": {
+        "column": "Name",
+        "direction": "ascending"
+      },
+      "columns": [{
+        "caption": "Name",
+        "name": "Name",
+        "width": "auto",
+        "add": "",
+        "edit": {
+          "type": "ValidationTextBox"
+        }
+      },{
+        "caption": "Variable 1",
+        "name": "VariableID1",
+        "width": "400px",
+        "add": 0,
+        "edit": {
+          "type": "SelectVariable"
+        }
+      },{
+        "caption": "Variable 2",
+        "name": "VariableID2",
+        "width": "400px",
+        "add": 0,
+        "edit": {
+          "type": "SelectVariable"
+        }
+      }],
+      "values": []
+    }
+  ]
+}

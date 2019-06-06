@@ -1,0 +1,11 @@
+{
+	"id": "{989DBDCA-4C2F-CF0D-135A-A5FAA4F35AF3}",
+	"name": "UniversalGateway",
+	"type": 4,
+	"vendor": "",
+	"aliases": ["Universal Gateway"],
+	"parentRequirements": [],
+	"childRequirements": [],
+	"implemented": [],
+	"prefix": "UG"
+}
