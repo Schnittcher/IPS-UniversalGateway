@@ -31,10 +31,17 @@ class UniversalGateway extends IPSModule
         $this->SendDebug(__FUNCTION__, 'SenderID '.$SenderID.' Message: '.$Message, 0);
         switch ($Message) {
             case VM_UPDATE:
+                IPS_LogMessage("Test", print_r($Data));
                 $AssociatedVariable = $this->getAssociatedVariable($SenderID);
                 $this->SendDebug(__FUNCTION__, 'SenderID '.$SenderID.' AssociatedVariable: '.$AssociatedVariable, 0);
                 if ($AssociatedVariable) {
-                    RequestAction($AssociatedVariable,GetValue($SenderID));
+                    $AssociatedValue = GetValue($AssociatedVariable);
+                    $SenderValue = GetValue($SenderID);
+                    $this->SendDebug(__FUNCTION__, 'AssociatedValue '.$AssociatedValue.' SenderValue: '.$SenderValue, 0);
+                    if ($AssociatedValue <> $SenderValue) {
+                        $this->SendDebug(__FUNCTION__, "RequestAction", 0);
+                        RequestAction($AssociatedVariable,$SenderValue);
+                    }
                 }
                 break;
             default:
@@ -51,9 +58,8 @@ class UniversalGateway extends IPSModule
                 return $Variable->VariableID2;
             } elseif ($Variable->VariableID2 == $VariableID) {
                 return $Variable->VariableID1;
-            } else {
-                return false;
             }
         }
+        return false;
     }
 }
