@@ -31,7 +31,6 @@ class UniversalGateway extends IPSModule
         $this->SendDebug(__FUNCTION__, 'SenderID '.$SenderID.' Message: '.$Message, 0);
         switch ($Message) {
             case VM_UPDATE:
-                IPS_LogMessage("Test", print_r($Data));
                 $AssociatedVariable = $this->getAssociatedVariable($SenderID);
                 $this->SendDebug(__FUNCTION__, 'SenderID '.$SenderID.' AssociatedVariable: '.$AssociatedVariable, 0);
                 if ($AssociatedVariable) {
