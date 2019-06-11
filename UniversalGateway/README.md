@@ -1,4 +1,5 @@
 # UniversalGateway
+Mit diesem Modul ist es möglich Variablen synchron zu halten, ohne mehrere Scripte oder Variablen anlegen zu müssen.
 
 ## Inhaltverzeichnis
 1. [Konfiguration](#1-konfiguration)

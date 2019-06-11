@@ -1,8 +1,9 @@
 [![Version](https://img.shields.io/badge/Symcon-PHPModul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 ![Version](https://img.shields.io/badge/Symcon%20Version-5.1%20%3E-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-
+[![StyleCI](https://styleci.io/repos/190527415/shield?style=flat)](https://styleci.io/repos/190527415)
 # IPS-UniversalGateway
+Mit diesem Modul ist es möglich Variablen synchron zu halten, ohne mehrere Scripte oder Variablen anlegen zu müssen.
 
 ## Inhaltverzeichnis
 1. [Voraussetzungen](#1-voraussetzungen)
@@ -15,7 +16,6 @@
 ## 1. Voraussetzungen
 
 * mindestens IPS Version 5.1
-* MQTT Server
 
 ## 2. Enthaltene Module
 
