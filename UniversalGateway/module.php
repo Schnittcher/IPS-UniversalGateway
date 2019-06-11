@@ -28,28 +28,29 @@ class UniversalGateway extends IPSModule
 
     public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     {
-        $this->SendDebug(__FUNCTION__, 'SenderID '.$SenderID.' Message: '.$Message, 0);
+        $this->SendDebug(__FUNCTION__, 'SenderID ' . $SenderID . ' Message: ' . $Message, 0);
         switch ($Message) {
             case VM_UPDATE:
                 $AssociatedVariable = $this->getAssociatedVariable($SenderID);
-                $this->SendDebug(__FUNCTION__, 'SenderID '.$SenderID.' AssociatedVariable: '.$AssociatedVariable, 0);
+                $this->SendDebug(__FUNCTION__, 'SenderID ' . $SenderID . ' AssociatedVariable: ' . $AssociatedVariable, 0);
                 if ($AssociatedVariable) {
                     $AssociatedValue = GetValue($AssociatedVariable);
                     $SenderValue = GetValue($SenderID);
-                    $this->SendDebug(__FUNCTION__, 'AssociatedValue '.$AssociatedValue.' SenderValue: '.$SenderValue, 0);
-                    if ($AssociatedValue <> $SenderValue) {
-                        $this->SendDebug(__FUNCTION__, "RequestAction", 0);
-                        RequestAction($AssociatedVariable,$SenderValue);
+                    $this->SendDebug(__FUNCTION__, 'AssociatedValue ' . $AssociatedValue . ' SenderValue: ' . $SenderValue, 0);
+                    if ($AssociatedValue != $SenderValue) {
+                        $this->SendDebug(__FUNCTION__, 'RequestAction', 0);
+                        RequestAction($AssociatedVariable, $SenderValue);
                     }
                 }
                 break;
             default:
-                $this->SendDebug(__FUNCTION__, $SenderID.' Message: '.$Message, 0);
+                $this->SendDebug(__FUNCTION__, $SenderID . ' Message: ' . $Message, 0);
                 break;
         }
     }
 
-    private function getAssociatedVariable($VariableID) {
+    private function getAssociatedVariable($VariableID)
+    {
         $VariablesJSON = $this->ReadPropertyString('Variables');
         $Variables = json_decode($VariablesJSON);
         foreach ($Variables as $Variable) {
