@@ -1,6 +1,5 @@
 {
-  "elements":
-  [
+  "elements": [
     {
       "type": "List",
       "name": "Variables",
@@ -12,31 +11,63 @@
         "column": "Name",
         "direction": "ascending"
       },
-      "columns": [{
-        "caption": "Name",
-        "name": "Name",
-        "width": "auto",
-        "add": "",
-        "edit": {
-          "type": "ValidationTextBox"
+      "columns": [
+        {
+          "caption": "Name",
+          "name": "Name",
+          "width": "auto",
+          "add": "",
+          "edit": {
+            "type": "ValidationTextBox"
+          }
+        },
+        {
+          "caption": "Variable 1",
+          "name": "VariableID1",
+          "width": "400px",
+          "add": 0,
+          "edit": {
+            "type": "SelectVariable"
+          }
+        },
+        {
+          "caption": "Variable 2",
+          "name": "VariableID2",
+          "width": "400px",
+          "add": 0,
+          "edit": {
+            "type": "SelectVariable"
+          }
+        },
+        {
+          "caption": "One-Way Sync (Variable 1 -> Variable 2)",
+          "name": "OneWay",
+          "visible": false,
+          "add": false,
+          "edit": {
+            "type": "CheckBox"
+          }
+        },
+        {
+          "caption": "Nur bei Wertänderung aktualisieren (Nur One-Way)",
+          "name": "TriggerOnlyOnValueChange",
+          "visible": false,
+          "add": true,
+          "edit": {
+            "type": "CheckBox"
+          }
+        },
+        {
+          "caption": "Umrechnung Variable 1-> Variable 2 (Nur One-Way)",
+          "name": "ConversionVar1ToVar2",
+          "width": "auto",
+          "visible": false,
+          "add": "$Value",
+          "edit": {
+            "type": "ValidationTextBox"
+          }
         }
-      },{
-        "caption": "Variable 1",
-        "name": "VariableID1",
-        "width": "400px",
-        "add": 0,
-        "edit": {
-          "type": "SelectVariable"
-        }
-      },{
-        "caption": "Variable 2",
-        "name": "VariableID2",
-        "width": "400px",
-        "add": 0,
-        "edit": {
-          "type": "SelectVariable"
-        }
-      }],
+      ],
       "values": []
     }
   ]
