@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+include 'VariableSynchronizer.php';
 
 class UniversalGateway extends IPSModule
 {
@@ -16,49 +17,74 @@ class UniversalGateway extends IPSModule
         //Never delete this line!
         parent::ApplyChanges();
 
-        $DevicesJSON = $this->ReadPropertyString('Variables');
-        if ($DevicesJSON != '') {
-            $Variables = json_decode($DevicesJSON);
-            foreach ($Variables as $key=>$Variable) {
-                $this->RegisterMessage($Variable->VariableID1, VM_UPDATE);
-                $this->RegisterMessage($Variable->VariableID2, VM_UPDATE);
+        $configuration = $this->ReadPropertyString('Variables');
+        if ($configuration != '') {
+            $configuration = json_decode($configuration);
+            foreach ($configuration as $key => $mapping) {
+                $this->SendDebug(__FUNCTION__, 'RegisterMessage Variable 1: ' . $mapping->VariableID1, 0);
+                $this->RegisterMessage($mapping->VariableID1, VM_UPDATE);
+
+                // Only register Variable 2 if OneWay-Sync is disabled
+                if (!isset($mapping->OneWay) || $mapping->OneWay == false) {
+                    $this->SendDebug(__FUNCTION__, 'RegisterMessage Variable 2: ' . $mapping->VariableID2, 0);
+                    $this->RegisterMessage($mapping->VariableID2, VM_UPDATE);
+                }
             }
         }
     }
 
-    public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
+    public function MessageSink($timeStamp, $senderID, $message, $data)
     {
-        $this->SendDebug(__FUNCTION__, 'SenderID ' . $SenderID . ' Message: ' . $Message, 0);
-        switch ($Message) {
+        $this->SendDebug(__FUNCTION__, $senderID . ' Message: ' . $message, 0);
+        switch ($message) {
             case VM_UPDATE:
-                $AssociatedVariable = $this->getAssociatedVariable($SenderID);
-                $this->SendDebug(__FUNCTION__, 'SenderID ' . $SenderID . ' AssociatedVariable: ' . $AssociatedVariable, 0);
-                if ($AssociatedVariable) {
-                    $AssociatedValue = GetValue($AssociatedVariable);
-                    $SenderValue = GetValue($SenderID);
-                    $this->SendDebug(__FUNCTION__, 'AssociatedValue ' . $AssociatedValue . ' SenderValue: ' . $SenderValue, 0);
-                    if ($AssociatedValue != $SenderValue) {
-                        $this->SendDebug(__FUNCTION__, 'RequestAction', 0);
-                        RequestAction($AssociatedVariable, $SenderValue);
-                    }
+                foreach ($this->GetMappingsForId($senderID) as $mapping) {
+                    $conversion = $this->GetConversion($mapping, $senderID);
+                    $targetVariableID = $this->GetAssociatedTargetID($mapping, $senderID);
+                    $updateTargetWithoutValueChange = $mapping->OneWay && $mapping->TriggerOnlyOnValueChange == false;
+                    $sendDebug = function ($source, $message)
+                    {
+                        $this->SendDebug($source, $message, 0);
+                    };
+
+                    $synchronizer = new VariableSynchronizer($senderID, $targetVariableID, $conversion, $updateTargetWithoutValueChange, $sendDebug);
+                    $synchronizer->UpdateTarget();
                 }
                 break;
-            default:
-                $this->SendDebug(__FUNCTION__, $SenderID . ' Message: ' . $Message, 0);
-                break;
         }
     }
 
-    private function getAssociatedVariable($VariableID)
+    private function GetMappingsForId($variableSourceID)
     {
-        $VariablesJSON = $this->ReadPropertyString('Variables');
-        $Variables = json_decode($VariablesJSON);
-        foreach ($Variables as $Variable) {
-            if ($Variable->VariableID1 == $VariableID) {
-                return $Variable->VariableID2;
-            } elseif ($Variable->VariableID2 == $VariableID) {
-                return $Variable->VariableID1;
+        $configJSON = $this->ReadPropertyString('Variables');
+        $mappings = json_decode($configJSON);
+        foreach ($mappings as $mapping) {
+            if (isset($mapping->OneWay) && $mapping->OneWay) {
+                if ($mapping->VariableID1 == $variableSourceID) {
+                    yield $mapping;
+                }
+            } else {
+                if ($mapping->VariableID1 == $variableSourceID || $mapping->VariableID2 == $variableSourceID) {
+                    yield $mapping;
+                }
             }
+        }
+    }
+
+    private function GetAssociatedTargetID($mapping, $variableSourceID)
+    {
+        if ($mapping->VariableID1 == $variableSourceID) {
+            return $mapping->VariableID2;
+        } elseif ($mapping->VariableID2 == $variableSourceID) {
+            return $mapping->VariableID1;
+        }
+        return false;
+    }
+
+    private function GetConversion($mapping, $variableSourceID)
+    {
+        if ($mapping->VariableID1 == $variableSourceID && isset($mapping->ConversionVar1ToVar2)) {
+            return $mapping->ConversionVar1ToVar2;
         }
         return false;
     }
